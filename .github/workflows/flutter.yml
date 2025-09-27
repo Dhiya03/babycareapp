@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    name: Build Flutter App
     runs-on: ubuntu-latest
 
     steps:
@@ -16,11 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Ensure Gradle wrapper is executable
-      - name: Fix gradlew permissions
-        run: chmod +x android/gradlew
-
-      # Setup Java for Gradle
+      # Setup Java (AGP 8.3.x requires Java 17)
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -31,11 +26,15 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0' # match your version
+          flutter-version: '3.24.0'
           channel: stable
           cache: true
 
-      # Verify installation
+      # 👇 Regenerate platform folders each run (ensures .flutter, settings.gradle.kts, local.properties exist)
+      - name: Regenerate Android/iOS/Web folders
+        run: flutter create .
+
+      # Verify Flutter
       - name: Flutter Doctor
         run: flutter doctor -v
 
@@ -47,7 +46,7 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
-      # Build App Bundle
+      # Build App Bundle (AAB)
       - name: Build App Bundle
         run: flutter build appbundle --release
 

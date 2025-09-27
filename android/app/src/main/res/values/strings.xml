@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Baby Care</string>
-    <string name="notification_channel_name">Baby Care Notifications</string>
-    <string name="notification_channel_description">Notifications for feeding, sleep, and care reminders</string>
-    <string name="feeding_reminder_title">Feeding Time</string>
-    <string name="sleep_reminder_title">Sleep Time</string>
-    <string name="care_reminder_title">Baby Care Reminder</string>
-</resources>
