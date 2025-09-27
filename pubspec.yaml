@@ -1,0 +1,41 @@
+name: babycareapp
+description: A baby care application built with Flutter
+publish_to: "none" # Remove if publishing to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Core Flutter packages
+  cupertino_icons: ^1.0.8
+
+  # Add more dependencies here as you grow the app
+  # Example:
+  # provider: ^6.1.2
+  # http: ^1.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+
+  # Add your assets here
+  assets:
+    - assets/images/
+    - assets/icons/
+
+  # Add fonts if needed
+  # fonts:
+  #   - family: Roboto
+  #     fonts:
+  #       - asset: assets/fonts/Roboto-Regular.ttf
+  #       - asset: assets/fonts/Roboto-Bold.ttf
+  #         weight: 700
