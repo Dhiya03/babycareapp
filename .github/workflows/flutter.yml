@@ -41,7 +41,10 @@ jobs:
       # Run static analysis
       - name: Analyze project source
         run: flutter analyze
-
+        
+      - name: Regenerate Android/iOS/Web folders
+        run: flutter create .
+  
       # Build APK
       - name: Build APK
         run: flutter build apk --release
