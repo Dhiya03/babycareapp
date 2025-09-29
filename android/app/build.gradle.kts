@@ -7,16 +7,6 @@ plugins {
 android {
     namespace = "com.babycareapp"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 
     defaultConfig {
         applicationId = "com.babycareapp"
@@ -28,12 +18,23 @@ android {
 
     buildTypes {
         release {
-            // Using debug signing for now - replace with proper keystore for production
+            // ⚠️ Replace this with a proper release keystore for Play Store
             signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
-flutter {
-    source = "../.."
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.24")
+}
+
+kotlin {
+    jvmToolchain(17)
 }
