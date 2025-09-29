@@ -16,4 +16,11 @@ pluginManagement {
 
 include(":app")
 
-apply(from = File(settings.pluginManagement.resolutionStrategy.eachPlugin.find { it.pluginId == "dev.flutter.flutter-plugin-loader" }!!.origin.toString()))
+@Suppress("UnstableApiUsage")
+var localProperties = java.util.Properties()
+var localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
+}
+
+apply(from = File(localProperties.getProperty("flutter.groovy") ?: throw GradleException("Could not find flutter.groovy.")))
