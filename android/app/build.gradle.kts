@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.babycareapp"       // 👈 used by R.java & Kotlin/Java packages
+    namespace = "com.babycareapp"
     compileSdk = flutter.compileSdkVersion
 
     defaultConfig {
-        applicationId = "com.babycareapp"   // 👈 final app ID in APK/AAB
+        applicationId = "com.babycareapp"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
