@@ -3,13 +3,19 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        // 👇 This is required for Flutter's Gradle plugin
-        maven { url = uri("${System.getenv("FLUTTER_HOME") ?: "../../flutter"}/packages/flutter_tools/gradle") }
-    }
-}
 
-plugins {
-    id("dev.flutter.flutter-gradle-plugin") version "1.0.0" apply false
+        // 👇 Point Gradle to Flutter SDK's embedded plugin
+        val localProperties = java.util.Properties()
+        val localPropertiesFile = file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(localPropertiesFile.inputStream())
+            val flutterSdkPath = localProperties.getProperty("flutter.sdk")
+                ?: throw GradleException("flutter.sdk not set in local.properties")
+            maven { url = uri("$flutterSdkPath/packages/flutter_tools/gradle") }
+        } else {
+            throw GradleException("local.properties not found. Flutter SDK path required.")
+        }
+    }
 }
 
 dependencyResolutionManagement {

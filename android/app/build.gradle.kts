@@ -18,7 +18,7 @@ android {
 
     buildTypes {
         release {
-            // ⚠️ Replace this with a proper release signingConfig for Play Store builds
+            // ⚠️ Replace this with a proper release keystore for Play Store
             signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             isShrinkResources = false
@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.25")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.24")
 }
 
 kotlin {
