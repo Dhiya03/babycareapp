@@ -15,10 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 🧹 Cleanup stray Gradle files
-      - name: Remove old Groovy settings.gradle if exists
-        run: rm -f android/settings.gradle
-
       # Setup Java (AGP 8.3.x requires Java 17)
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -42,6 +38,10 @@ jobs:
       # Ensure platform folders exist (.flutter, local.properties, etc.)
       - name: Regenerate Android/iOS/Web folders
         run: flutter create .
+
+      # 🧹 Remove Groovy settings.gradle if flutter create added it
+      - name: Cleanup duplicate settings.gradle
+        run: rm -f android/settings.gradle
 
       # Verify Flutter & environment
       - name: Flutter Doctor
