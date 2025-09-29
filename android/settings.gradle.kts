@@ -8,6 +8,10 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("dev.flutter.flutter-gradle-plugin") version "1.0.0" apply false
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
