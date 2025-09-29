@@ -35,14 +35,6 @@ jobs:
         run: |
           sed -i 's#distributionUrl=.*#distributionUrl=https\\://services.gradle.org/distributions/gradle-8.4-all.zip#g' android/gradle/wrapper/gradle-wrapper.properties
 
-      # Ensure platform folders exist (.flutter, local.properties, etc.)
-      - name: Regenerate Android/iOS/Web folders
-        run: flutter create .
-
-      # 🧹 Remove Groovy settings.gradle if flutter create added it
-      - name: Cleanup duplicate settings.gradle
-        run: rm -f android/settings.gradle
-
       # Verify Flutter & environment
       - name: Flutter Doctor
         run: flutter doctor -v
