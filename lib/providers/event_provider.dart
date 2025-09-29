@@ -10,17 +10,30 @@ import '../services/export_service_mobile.dart';
 import '../services/export_service_web.dart';
 import '../utils/constants.dart';
 
+/// Factory function to get the correct storage service based on the platform.
+StorageService getStorageService() {
+  if (kIsWeb) {
+    return StorageServiceWeb();
+  } else {
+    return StorageServiceMobile();
+  }
+}
+
+/// Factory function to get the correct export service based on the platform.
+ExportService getExportService(StorageService storageService) {
+  if (kIsWeb) {
+    return ExportServiceWeb(storageService);
+  } else {
+    return ExportServiceMobile(storageService);
+  }
+}
+
 // Storage service provider
-final storageServiceProvider = Provider<StorageService>((ref) {
-  return kIsWeb ? StorageServiceWeb() : StorageServiceMobile();
-});
+final storageServiceProvider = Provider<StorageService>((ref) => getStorageService());
 
 // Export service provider
-final exportServiceProvider = Provider<ExportService>((ref) {
-  return kIsWeb
-      ? ExportServiceWeb(ref.watch(storageServiceProvider))
-      : ExportServiceMobile(ref.watch(storageServiceProvider));
-});
+final exportServiceProvider =
+    Provider<ExportService>((ref) => getExportService(ref.watch(storageServiceProvider)));
 
 // Current selected date provider
 final selectedDateProvider = StateProvider<DateTime>((ref) {

@@ -260,7 +260,7 @@ class _EditEntryScreenState extends ConsumerState<EditEntryScreen> {
         if (_originalEvent.isFeeding && _endDateTime != null) ...[
           const SizedBox(height: AppConstants.spacing / 2),
           Card(
-            color: Theme.of(context).primaryColor.withOpacity(0.1),
+            color: Theme.of(context).primaryColor.withAlpha(26), // 10% opacity
             child: Padding(
               padding: const EdgeInsets.all(AppConstants.spacing),
               child: Row(

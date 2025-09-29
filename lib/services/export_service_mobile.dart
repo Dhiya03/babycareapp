@@ -3,9 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'storage_service.dart';
 import 'export_service.dart';
+import 'export_report_generator.dart';
 
 /// Mobile implementation of ExportService using dart:io.
-class ExportServiceMobile implements ExportService {
+class ExportServiceMobile with ReportGenerator implements ExportService {
   final StorageService _storageService;
 
   ExportServiceMobile(this._storageService);
@@ -60,7 +61,7 @@ class ExportServiceMobile implements ExportService {
   @override
   Future<void> exportSummaryReport(DateTime startDate, DateTime endDate) async {
     try {
-      final report = await _createSummaryReport(startDate, endDate);
+      final report = await createSummaryReport(_storageService, startDate, endDate);
 
       final tempDirPath = await _storageService.getAppDirectoryPath();
       final tempFile = File(
@@ -118,7 +119,7 @@ class ExportServiceMobile implements ExportService {
   @override
   Future<void> exportAsCSV(DateTime startDate, DateTime endDate) async {
     try {
-      final csvData = await _createCSVData(startDate, endDate);
+      final csvData = await createCSVData(_storageService, startDate, endDate);
       if (csvData.isEmpty) {
         throw Exception('No data to export for the selected range.');
       }
@@ -165,124 +166,5 @@ class ExportServiceMobile implements ExportService {
       0,
     ); // Last day of month
     await exportSummaryReport(monthStart, monthEnd);
-  }
-
-  Future<String> _createCSVData(DateTime startDate, DateTime endDate) async {
-    final buffer = StringBuffer();
-    // CSV Header
-    buffer.writeln('id,type,start,end,duration_minutes,notes');
-
-    for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
-      final current = startDate.add(Duration(days: i));
-      final dayHistory = await _storageService.loadDayHistory(current);
-      for (final event in dayHistory.events) {
-        final startIso = event.start.toIso8601String();
-        final endIso = event.end?.toIso8601String() ?? '';
-        // Escape quotes in notes for CSV safety
-        final notes = '"${event.notes.replaceAll('"', '""')}"';
-        buffer.writeln(
-          '${event.id},${event.type},$startIso,$endIso,${event.durationMinutes},$notes',
-        );
-      }
-    }
-    return buffer.toString();
-  }
-
-  Future<String> _createSummaryReport(
-    DateTime startDate,
-    DateTime endDate,
-  ) async {
-    final buffer = StringBuffer();
-    buffer.writeln('Baby Care Summary Report');
-    buffer.writeln(
-      'Period: ${DateFormat('MMM d, y').format(startDate)} - ${DateFormat('MMM d, y').format(endDate)}',
-    );
-    buffer.writeln(
-      'Generated: ${DateFormat('MMM d, y HH:mm').format(DateTime.now())}',
-    );
-    buffer.writeln();
-    buffer.writeln('=' * 50);
-    buffer.writeln();
-
-    int totalDays = 0;
-    int totalFeedings = 0;
-    int totalFeedingMinutes = 0;
-    int totalUrinations = 0;
-    int totalStools = 0;
-    final dailyStats = <String>[];
-
-    for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
-      final current = startDate.add(Duration(days: i));
-      final dayHistory = await _storageService.loadDayHistory(current);
-
-      if (dayHistory.hasEvents) {
-        totalDays++;
-        totalFeedings += dayHistory.feedingCount;
-        totalFeedingMinutes += dayHistory.totalFeedingMinutes;
-        totalUrinations += dayHistory.urinationCount;
-        totalStools += dayHistory.stoolCount;
-
-        dailyStats.add(
-          '${DateFormat('MMM d').format(current)}: '
-          '${dayHistory.feedingCount}F (${dayHistory.totalFeedingMinutes}m), '
-          '${dayHistory.urinationCount}U, ${dayHistory.stoolCount}S',
-        );
-      }
-    }
-
-    buffer.writeln('SUMMARY STATISTICS');
-    buffer.writeln('-' * 20);
-    buffer.writeln('Days with data: $totalDays');
-    buffer.writeln('Total feedings: $totalFeedings');
-    buffer.writeln(
-      'Total feeding time: ${_formatDuration(totalFeedingMinutes)}',
-    );
-    buffer.writeln(
-      'Average feeding time: ${totalFeedings > 0 ? _formatDuration(totalFeedingMinutes ~/ totalFeedings) : '0m'}',
-    );
-    buffer.writeln('Total urinations: $totalUrinations');
-    buffer.writeln('Total stools: $totalStools');
-    buffer.writeln();
-
-    if (totalDays > 0) {
-      buffer.writeln('Daily averages:');
-      buffer.writeln(
-        '- Feedings: ${(totalFeedings / totalDays).toStringAsFixed(1)} per day',
-      );
-      buffer.writeln(
-        '- Feeding time: ${_formatDuration((totalFeedingMinutes / totalDays).round())} per day',
-      );
-      buffer.writeln(
-        '- Urinations: ${(totalUrinations / totalDays).toStringAsFixed(1)} per day',
-      );
-      buffer.writeln(
-        '- Stools: ${(totalStools / totalDays).toStringAsFixed(1)} per day',
-      );
-      buffer.writeln();
-    }
-
-    if (dailyStats.isNotEmpty) {
-      buffer.writeln('DAILY BREAKDOWN');
-      buffer.writeln('-' * 15);
-      for (final stat in dailyStats) {
-        buffer.writeln(stat);
-      }
-      buffer.writeln();
-    }
-
-    buffer.writeln('Legend: F=Feedings, U=Urinations, S=Stools');
-    buffer.writeln('Note: Times shown in minutes (m)');
-
-    return buffer.toString();
-  }
-
-  String _formatDuration(int minutes) {
-    if (minutes < 60) return '${minutes}m';
-
-    final hours = minutes ~/ 60;
-    final remainingMinutes = minutes % 60;
-
-    if (remainingMinutes == 0) return '${hours}h';
-    return '${hours}h ${remainingMinutes}m';
   }
 }

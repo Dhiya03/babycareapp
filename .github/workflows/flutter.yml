@@ -30,6 +30,11 @@ jobs:
           channel: stable
           cache: true
 
+      # ✅ Create local.properties file for Android
+      - name: Create local.properties
+        run: |
+          echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
+
       # ✅ Enforce Gradle 8.4 wrapper
       - name: Force Gradle 8.4
         run: |
@@ -43,9 +48,13 @@ jobs:
       - name: Flutter Pub Get
         run: flutter pub get
 
-      # Analyze (warnings won’t fail CI)
+      # Analyze for errors and warnings
       - name: Flutter Analyze
-        run: flutter analyze || true
+        run: flutter analyze
+
+      # Run widget tests
+      - name: Flutter Test
+        run: flutter test
 
       # Build APK
       - name: Build APK

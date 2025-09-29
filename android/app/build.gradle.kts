@@ -18,6 +18,7 @@ android {
 
     buildTypes {
         release {
+            // ⚠️ Replace this with a proper release signingConfig for Play Store builds
             signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             isShrinkResources = false
