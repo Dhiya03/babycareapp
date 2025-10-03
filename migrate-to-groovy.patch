@@ -1,0 +1,92 @@
+diff --git a/android/app/build.gradle b/android/app/build.gradle
+new file mode 100644
+index 0000000..2c7b0e0
+--- /dev/null
++++ b/android/app/build.gradle
+@@
++apply plugin: 'com.android.application'
++apply plugin: 'kotlin-android'
++apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
++
++android {
++    namespace "com.babycareapp"
++    compileSdkVersion flutter.compileSdkVersion
++
++    defaultConfig {
++        applicationId "com.babycareapp"
++        minSdkVersion flutter.minSdkVersion
++        targetSdkVersion flutter.targetSdkVersion
++        versionCode flutter.versionCode
++        versionName flutter.versionName
++    }
++
++    buildTypes {
++        release {
++            signingConfig signingConfigs.debug // ⚠️ replace for Play Store
++            minifyEnabled false
++            shrinkResources false
++        }
++    }
++
++    compileOptions {
++        sourceCompatibility JavaVersion.VERSION_17
++        targetCompatibility JavaVersion.VERSION_17
++    }
++}
++
++dependencies {
++    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.24"
++}
+diff --git a/android/build.gradle b/android/build.gradle
+new file mode 100644
+index 0000000..49c0cf0
+--- /dev/null
++++ b/android/build.gradle
+@@
++buildscript {
++    repositories {
++        google()
++        mavenCentral()
++    }
++    dependencies {
++        classpath 'com.android.tools.build:gradle:8.3.2'
++        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24"
++    }
++}
++
++allprojects {
++    repositories {
++        google()
++        mavenCentral()
++    }
++}
++
++tasks.register("clean", Delete) {
++    delete rootProject.buildDir
++}
+diff --git a/android/settings.gradle b/android/settings.gradle
+new file mode 100644
+index 0000000..e7d1c6d
+--- /dev/null
++++ b/android/settings.gradle
+@@
++include ':app'
++
++def localProperties = new Properties()
++def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
++if (localPropertiesFile.exists()) {
++    localPropertiesFile.withReader("UTF-8") { reader -> localProperties.load(reader) }
++}
++
++def flutterSdkPath = localProperties.getProperty("flutter.sdk")
++assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
++apply from: "$flutterSdkPath/packages/flutter_tools/gradle/flutter.gradle"
+diff --git a/android/app/build.gradle.kts b/android/app/build.gradle.kts
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/android/build.gradle.kts b/android/build.gradle.kts
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/android/settings.gradle.kts b/android/settings.gradle.kts
+deleted file mode 100644
+index e69de29..0000000
